@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Graph Based Visual Odometry with Epipolar Supervision</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']],
+          displayMath: [['$$', '$$'], ['\\[', '\\]']]
+        }
+      };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            font-family: 'Open Sans', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            background-color: #fff;
+        }
+        
+        /* Header Block */
+        .title-block {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        h1 {
+            font-family: 'Roboto', sans-serif;
+            font-size: 2.5em;
+            color: #222;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .conference {
+            font-size: 1.2em;
+            color: #d9534f;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .authors {
+            font-size: 1.2em;
+            margin-bottom: 10px;
+        }
+        .author-link {
+            color: #0066cc;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        .author-link:hover {
+            text-decoration: underline;
+        }
+        .affiliations {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
+        }
+        
+        /* Quick Links (Paper, Code, etc.) */
+        .links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #363636;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 20px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+        .btn:hover {
+            background-color: #555;
+        }
+
+        /* Sections */
+        .section {
+            margin-bottom: 50px;
+        }
+        .section h2 {
+            font-family: 'Roboto', sans-serif;
+            text-align: center;
+            font-size: 2em;
+            margin-bottom: 25px;
+            color: #222;
+        }
+        p {
+            font-size: 1.1em;
+            text-align: justify;
+            margin-bottom: 15px;
+        }
+        ul {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        li {
+            margin-bottom: 10px;
+        }
+
+        /* Figures & Images */
+        .figure-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .figure-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .caption {
+            font-size: 0.95em;
+            color: #666;
+            margin-top: 15px;
+            text-align: center;
+            padding: 0 20px;
+            font-style: italic;
+        }
+
+        /* BibTeX Block */
+        .bibtex-block {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            overflow-x: auto;
+            border: 1px solid #ddd;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="title-block">
+        <h1>Graph Based Visual Odometry with Epipolar Supervision</h1>
+        <div class="conference">Research, Innovation, Society and Entrepreneurship 2026 (RISE 2026)</div>
+        
+        <div class="authors">
+            <a href="mailto:prateeth.rao@iiitb.ac.in" class="author-link">Prateeth Rao</a> &amp; 
+            <a href="mailto:sachit@iiitb.ac.in" class="author-link">Sachit Rao</a>
+        </div>
+        
+        <div class="affiliations">
+            Robotics Studio
+        </div>
+        
+        <div class="links">
+            <a href="#" class="btn">📄 Paper (In Preparation)</a>
+            <a href="#" class="btn">💻 Code (Under Development)</a>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Introduction</h2>
+        <p>
+            Visual perception serves as a primary mechanism through which both biological and artificial systems perceive, navigate, and interact with their environments. For artificial systems, vision provides a rich source of information that enables complex tasks such as localization, mapping, and scene understanding to be performed. The objective of vision-based perception is 3-D reconstruction, with which spatial structure from 2-dimensional (2-D) image observations can be recovered. Frameworks such as SLAM and SfM address the objective of making accurate 3-D reconstruction by jointly estimating camera motion and reconstructing the surrounding environment from image sequences.
+        </p>
+        
+        <div class="figure-container">
+            <img src="images/pipeline.png" alt="General Visual SLAM Pipeline">
+            <div class="caption">General Visual SLAM Pipeline</div>
+        </div>
+
+        <p>
+            At the core of both SLAM and SfM lies the estimation of the camera’s 6 Degrees of Freedom (6-DoF) pose, which encodes its position and orientation relative to the world coordinate frame. Despite the advantages, vision-based localization remains challenging. Appearance variations, illumination changes, occlusions, texture-poor regions, dynamic objects, and camera motion instability all contribute to the difficulty of establishing reliable correspondences between images. Furthermore, practical systems must operate under computational and latency constraints, limiting the complexity of permissible algorithms.
+        </p>
+    </div>
+
+    <div class="section">
+        <h2>Epipolar Graph Construction</h2>
+        <p>The process of Epipolar Graph Construction is as follows:</p>
+        <ul>
+            <li><strong>Matched and Normalized Correspondences</strong>: For each image pair, LoFTR produces a set of $N\gg0$ matched normalized keypoints $\{(\mathbf{x}_i^{(1)}, \mathbf{x}_i^{(2)})\}_{i=1}^{N}$, where $\mathbf{x}_i^{(j)} \in \mathbb{R}^3$ denotes homogeneous normalized image coordinates. Each correspondence is stacked to form a feature vector.</li>
+            
+            <li><strong>Initial Graph Construction</strong>: A correspondence graph $\mathcal{G} = (\mathcal{V}, \mathcal{E})$ is constructed where each node $v_i \in \mathcal{V}$ corresponds to a feature vector $\mathbf{f}_i$. Edges are formed using the $k$-nearest neighbor (k-NN) strategy based on Euclidean distance in the normalized coordinate space.</li>
+            
+            <li><strong>Initial Essential Matrix Estimation</strong>: To obtain an initial geometric model, a minimal random subset of correspondences is sampled. From this subset, an initial estimate of the essential matrix $\mathbf{E}$ is computed. This estimate serves as a reference for evaluating epipolar consistency.</li>
+            
+            <li><strong>Sampson Distance–Based Graph Pruning</strong>: For each node in the graph, the Sampson distance, $d_{\text{Sampson}}$, is computed to assess epipolar consistency with respect to $\mathbf{E}$. Given a threshold $\tau = 10^{-4}$, nodes whose correspondences violate $d_{\text{Sampson}} < \tau$ are identified as non-epipolar matches. Edges connected to such nodes are removed, resulting in a sparsified graph that preserves only geometrically consistent connections.</li>
+        </ul>
+
+        $$\mathbf{f}_i = \begin{bmatrix} \mathbf{x}_i^{(1)} & \mathbf{x}_i^{(2)} \end{bmatrix}^T \in \mathbb{R}^6$$
+        
+        <p>For a sequence of $M$ images, $M-1$ image pairs generate a tensor of size $(M-1, N, 6)$.</p>
+
+        <div class="figure-container">
+            <img src="images/graph_construction.png" alt="Epipolar Graph Construction">
+            <div class="caption">Epipolar Graph Construction</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Graph Geometry Pose Regression</h2>
+        <p>
+            <strong>Final Graph Representation:</strong> The resulting graph consists of a reduced set of nodes corresponding to epipolar-consistent matched keypoints $\mathbf{F}' \in \mathbb{R}^{N' \times 6}$ and a sparsified edge set. This graph is subsequently passed to graph-based learning architectures for feature aggregation and selection of regions that satisfy epipolar geometry, enabling robust relative pose regression.
+        </p>
+
+        <div class="figure-container">
+            <img src="images/sparse_graph.png" alt="Epipolar Sparse Graph to Graph Based Pose Regression">
+            <div class="caption">Epipolar Sparse Graph to Graph Based Pose Regression</div>
+        </div>
+
+        <p>
+            When the matched and normalized keypoints, represented by patch region colors as shown in the plots, are passed through the GNN regression module, the layers of the GNN architecture cluster the keypoints before pooling them into a higher-dimensional feature vector that influences pose estimation.
+        </p>
+
+        <div class="figure-container">
+            <img src="images/graph_explain_results.png" alt="Graph Relative Pose estimation">
+            <div class="caption">Graph Relative Pose estimation</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Regressed Pose and Trajectory Results</h2>
+        <p>Comparative analysis of pose regression modules with the developed GNN module:</p>
+        
+        <div class="figure-container">
+            <img src="images/metric_res.png" alt="Tabular Results Testing on KiTTi">
+            <div class="caption">Tabular Results Testing on KiTTi</div>
+        </div>
+
+        <div class="figure-container">
+            <img src="images/traj_thesis_vslam.png" alt="Trajectory Plot: CNN vs Graph">
+            <div class="caption">Trajectory Plot: CNN vs Graph</div>
+        </div>
+    </div>
+
+    <div class="section">
+        <h2>Citation</h2>
+        <p>If you find this work useful for your research, please consider citing it once published:</p>
+        <div class="bibtex-block">
+@unpublished{rao2026relational,
+  title={Graph Based Visual Odometry with Epipolar Supervision},
+  author={Rao, Prateeth and Rao, Sachit},
+  note={In preparation},
+  year={2026}
+}
+        </div>
+    </div>
+
+</body>
+</html>
