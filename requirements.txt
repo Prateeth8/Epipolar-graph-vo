@@ -1,0 +1,23 @@
+# Core ML and data science stack
+numpy
+pandas
+scipy
+matplotlib
+natsort
+opencv-python
+kornia
+
+# PyTorch stack (CUDA wheel recommended for GPU usage)
+torch==2.6.0
+torchvision==0.21.0
+torchaudio==2.6.0
+
+# Graph neural network dependencies
+torch-geometric
+torch-cluster
+torch-scatter
+torch-sparse
+
+# Notebook support
+ipykernel
+jupyter
