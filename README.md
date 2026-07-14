@@ -1,12 +1,18 @@
 # Epipolar-graph-vo
 
-Website highlighting the work from the paper "Relational Epipolar Graph for Relative Pose Estimation".
+Repo highlights the work from the paper "Relational Epipolar Graph for Relative Pose Estimation" and thesis titled "GRAPH-BASED RELATIVE POSE ESTIMATION WITH EPIPOLAR GEOMETRY SUPERVISION FOR VISUAL SLAM".
 
 ## Overview
 This repository contains an implementation for training and evaluating a graph-based visual odometry pipeline on KITTI-style data. The notebooks in this project cover:
-- data preparation from KITTI odometry sequences
-- keypoint and pose preprocessing
-- training graph neural network models for relative pose estimation
+- Data preparation from KITTI odometry sequences.
+- Finding matched keypoints using LoFTR and processing the GT poses from dataset for training.
+- Matched keypoints normalized by Camera Intrinsics and keypoint graphs are constructed.
+- Finding an initial estimate of Essential Matrix to filter edges in the graph (Construction of Epipolar Graphs).
+- Epipolar Graphs (Sparse Graph) passed to GNN to perform advance filtering when supervised over Geometric Loss Function.
+- GNN Modules: a) 3xGCN + GAT + GA Pool, b) GAT + 2xGCN + GA Pool, c) GIN + Sum Pool and d) Cross Graph Attention.
+- Loss Function Comprises of: MSE + Scale + (Spectral + Essential Matrix) + Yaw loss -> Weighted Composite Loss Function.
+- Observations: a) Robust Pose Estimation, b) Lower Trajectory alignment with BA (Good Estimated Poses), c) Faster Training -> Lightweight architecture, d) Works with minimal correlation between scenes and e) Estimates are better compared to SAC methods and CNN based pose regression.
+- Disadvantages: a) Dependent on a good initial estimate of Essential Matrix, b) Dependent on Camera Intrinsics and c) Needs transfer learning, not easily generalizable over direct testing.
 
 ## Dataset
 - KITTI Odometry Dataset: https://www.kaggle.com/datasets/hocop1/kitti-odometry
