@@ -1,6 +1,6 @@
 # Epipolar-graph-vo
 
-Repo highlights the work from the paper "Relational Epipolar Graph for Relative Pose Estimation" and thesis titled "GRAPH-BASED RELATIVE POSE ESTIMATION WITH EPIPOLAR GEOMETRY SUPERVISION FOR VISUAL SLAM".
+Repo highlights the work from the paper "Geometry-Aware Epipolar Correspondence Graphs for Monocular Visual Odometry" and thesis titled "GRAPH-BASED RELATIVE POSE ESTIMATION WITH EPIPOLAR GEOMETRY SUPERVISION FOR VISUAL SLAM".
 
 ## Overview
 This repository contains an implementation for training and evaluating a graph-based visual odometry pipeline on KITTI-style data. The notebooks in this project cover:
